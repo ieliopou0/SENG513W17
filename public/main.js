@@ -24,9 +24,28 @@
 
   socket.on('drawing', onDrawingEvent);
 
+  socket.on('image', loadImage);
+
+
   window.addEventListener('resize', onResize, false);
   onResize();
 
+  function loadImage(data){
+    // encode into base64
+    var uint8Arr = new Uint8Array(data.buffer);
+    var binary = '';
+    for (var i = 0; i < uint8Arr.length; i++) {
+        binary += String.fromCharCode(uint8Arr[i]);
+    }
+    var base64String = window.btoa(binary);
+    var img = new Image();
+    // load image
+    img.onload = function () {
+      context.drawImage(img, 0, 0);
+    };
+    img.src = 'data:image/jpeg;base64,' + base64String;
+    console.log('Got the image');
+  }
 
   function drawLine(x0, y0, x1, y1, color, emit){
     context.beginPath();
