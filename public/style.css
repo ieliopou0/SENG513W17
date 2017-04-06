@@ -1,6 +1,6 @@
-
 /**
  * Fix user-agent
+ * Parts of this CSS file are from https://getbootstrap.com/examples/offcanvas/ and socket.io
  */
 
 * {
@@ -11,6 +11,25 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+.text-center {
+  padding-top: 20px;
+}
+
+#sidebar  {
+position: absolute;
+left: -182px;
+width: 200px;
+height: 100%;
+background-color: #ffffff;
+border: 1px grey solid;
+font-size: 12px;
+}
+
+#sidebar:hover  {
+left: 0px;
 }
 
 /**
@@ -18,23 +37,25 @@ html, body {
  */
 
 .whiteboard {
-  height: 100%;
+  height: auto;
   width: 100%;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
+  position: absolute; 
 }
 
 .colors {
-  position: fixed;
+  position: absolute;
 }
 
 .color {
   display: inline-block;
-  height: 48px;
-  width: 48px;
+  height: 30px;
+  width: 30px;
+}
+
+.color-xs {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
 }
 
 .color.black { background-color: black; }
