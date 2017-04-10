@@ -8,6 +8,7 @@
   var canvas = document.getElementsByClassName('whiteboard')[0];
   var colors = document.getElementsByClassName('color');
   var context = canvas.getContext('2d');
+  
 
   // Get navigation bar elements
   var open = document.getElementById('openLink');
@@ -36,7 +37,7 @@
 
   // Manage navigation clicks
   open.addEventListener('click', openImage, false);
-  save.addEventListener('click', redraw, false);
+  save.addEventListener('click', saveCanvas, false);
   clear.addEventListener('click', clearCanvas, false);
 
   // Manage touch events
@@ -131,6 +132,7 @@
     if (!drawing) { return; }
     drawing = false;
     drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
+    saveCanvas();
   }
 
   function onMouseMove(e){
@@ -182,6 +184,17 @@
   */
   function saveCanvas(){
     console.log('Canvas saved!');
+    var dataURL = canvas.toDataURL("image/png");
+    socket.emit("imaged",dataURL);
+
+    //console.log(dataURL);
+    
+    //use this to download a png file
+    //var download = document.getElementById("download");
+
+     //document.getElementById("download").href = dataURL;
+
+
   }
 
   // clear canvas
