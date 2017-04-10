@@ -34,6 +34,13 @@ function onConnection(socket){
 
   });
 
+  socket.on('reload', function(){
+  	 fs.readFile(__dirname + filePath, function(err, buffer){
+    socket.emit('image', { buffer: buffer });
+    console.log('Image put into buffer');
+	});
+  });
+
 }
 io.on('connection', onConnection);
 
