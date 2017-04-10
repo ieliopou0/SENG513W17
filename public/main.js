@@ -167,8 +167,9 @@
 
   function redraw() {
     console.log("redrawing");
-    var imgData = context.getImageData(0,0, canvas.width, canvas.height);
-    context.putImageData(imgData, 0, 0);
+    //var imgData = context.getImageData(0,0, canvas.width, canvas.height);
+    //context.putImageData(imgData, 0, 0);
+    socket.emit('reload');
 
     /*
     canvasHx.width = canvas.width;
