@@ -14,7 +14,7 @@
   var open = document.getElementById('openLink');
   var save = document.getElementById('saveLink');
   var clear = document.getElementById('clearLink');
-
+  var download = document.getElementById('downloadLink');
   canvas.width = document.body.clientWidth;
   canvas.height = document.body.clientHeight;
 
@@ -38,14 +38,15 @@
   // Manage navigation clicks
   open.addEventListener('click', openImage, false);
   save.addEventListener('click', saveCanvas, false);
+  download.addEventListener('click', downloadImage, false);
   clear.addEventListener('click', clearCanvas, false);
 
   // Manage touch events
   // From: https://developer.mozilla.org/en/docs/Web/API/Touch_events
-  canvas.addEventListener('touchstart', onTouch, false);
-  canvas.addEventListener('touchend', onTouch, false);
-  canvas.addEventListener('touchcancel', onTouch, false);
-  canvas.addEventListener('touchmove', onTouch, false);
+  canvas.addEventListener('touchstart', touchHandler, false);
+  canvas.addEventListener('touchend', touchHandler, false);
+  canvas.addEventListener('touchcancel', touchHandler, false);
+  canvas.addEventListener('touchmove', touchHandler, false);
 
   for (var i = 0; i < colors.length; i++){
     colors[i].addEventListener('click', onColorUpdate, false);
@@ -56,13 +57,19 @@
   socket.on('drawing', onDrawingEvent);
   socket.on('image', loadImage);
 
-  window.addEventListener('resize', onResize, false);
-  onResize();
+  //window.addEventListener('resize', onResize, false);
+  //onResize();
 
   // TO DO - touch event handler
   function onTouch(e){
     var touches = event.changedTouches,
     first = touches[0];
+  }
+
+  // Prepare canvas so user may download locally
+  function downloadImage() {
+    var data = canvas.toDataURL('image/png');
+    download.href = data;
   }
 
   function sendDrawingToServer(data){
@@ -205,7 +212,7 @@
   }
 
   // make the canvas fill its parent
-  function onResize() {
+  /*function onResize() {
     canvasHx.width = canvas.width;
     canvasHx.height = canvas.height;
     canvas.width = window.innerWidth;
@@ -214,7 +221,7 @@
     context.drawImage(canvasHx, 0, 0);
     redraw();
     console.log("Canvas resized");
-    // context = canvas.getContext('2d');
+    */// context = canvas.getContext('2d');
     // context.onload = function () {
     //   context.drawImage(canvasHx, 0, 0, canvasHx.width, canvasHx.height, 0, 0, canvas.width, canvas.height);
     // };
@@ -230,6 +237,41 @@
     context.putImageData(imgData, 0, 0);
     // redraw();
     */
-  }
+  //}
+
+ 
+    function touchHandler(event)
+    {
+        var touches = event.changedTouches,
+            first = touches[0],
+            type = '';
+        switch(event.type)
+        {
+            case "touchstart":
+                type = "mousedown";
+                break;
+            case "touchmove":
+                type = "mousemove";
+                break;
+            case "touchend":
+                type = "mouseup";
+                break;
+            case "touchcancel":
+                type = "mouseup";
+                break;
+            default:
+                return;
+        }
+      var simulatedEvent = document.createEvent("MouseEvent");
+        simulatedEvent.initMouseEvent(type, true, true, window, 1,
+            first.screenX, first.screenY,
+            first.clientX, first.clientY, false,
+            false, false, false, 0/*left*/, null);
+
+        first.target.dispatchEvent(simulatedEvent);
+        event.preventDefault();
+    }
+
+
 
 })();
