@@ -4,8 +4,7 @@
  */
 
 * {
-  padding: 0px;
-  margin: 0px;
+  box-sizing: border-box;
 }
 
 html, body {
@@ -15,21 +14,14 @@ html, body {
   overflow: hidden;
 }
 
-
-/**
- * NAV
- */
-
-#menu-icon {
-  top: 5px;
-  right: 2px;
-  position: absolute;
+.text-center {
+  padding-top: 20px;
 }
 
 #sidebar  {
 position: absolute;
-left: -102px;
-width: 120px;
+left: -182px;
+width: 200px;
 height: 100%;
 background-color: #ffffff;
 border: 1px grey solid;
@@ -52,7 +44,6 @@ left: 0px;
 
 .colors {
   position: absolute;
-  left: 4px;
 }
 
 .color {
@@ -61,13 +52,14 @@ left: 0px;
   width: 30px;
 }
 
+.color-xs {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+
 .color.black { background-color: black; }
-.color.darkred { background-color: darkred; }
+.color.red { background-color: red; }
 .color.green { background-color: green; }
-.color.aquamarine { background-color: aquamarine; }
-.color.gold { background-color: gold; }
-.color.darkslateblue { background-color: darkslateblue; }
-.color.greenyellow { background-color: greenyellow; }
-.color.palevioletred { background-color: palevioletred; }
-.color.lightseagreen { background-color: lightseagreen; }
-.color.midnightblue { background-color: midnightblue; }
+.color.blue { background-color: blue; }
+.color.yellow { background-color: yellow; }

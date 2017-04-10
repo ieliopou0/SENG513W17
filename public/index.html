@@ -11,14 +11,16 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas class="whiteboard" width="1900" height="1000">A whiteboard should have appeared here!</canvas>
+<canvas class="whiteboard">A whiteboard should have appeared here!</canvas>
 <div id="sidebar">
   <div style="float: left; width: 90%; height: auto">
-    <div id="menu-icon" style="float: right; width: 100;"><i class="glyphicon glyphicon-menu-hamburger"></i><br></div>
     <ul class="nav visible-sm visible-md visible-lg">
-      <li><a href="#" id="openLink"><i class="glyphicon glyphicon-folder-open"></i> Open</a></li>
-      <li><a href="#" id="saveLink"><i class="glyphicon glyphicon-save"></i> Save</a></li>
-      <li><a href="#" id="clearLink"><i class="glyphicon glyphicon-erase"></i> Clear All</a></li>    
+      <li dir="rtl" class="active">Menu      <i class="glyphicon glyphicon-menu-hamburger"></i></li>
+      <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> Open</a></li>
+      <li><a href="#"><i class="glyphicon glyphicon-share-alt"></i> Share</a></li>
+      <li><a href="#"><i class="glyphicon glyphicon-save"></i> Save</a></li>
+      <li><a href="#"><i class="glyphicon glyphicon-erase"></i> Erase</a></li> 
+      <li><a href="#"><i class="glyphicon glyphicon-pencil"></i> Draw</a></li>    
     </ul>
 
     <!-- tiny only nav -->
@@ -31,17 +33,23 @@
     </ul> 
     <div class="colors">
       <div class="color black"></div>
-      <div class="color darkred"></div>
+      <div class="color red"></div>
       <div class="color green"></div>
-      <div class="color gold"></div>
-      <div class="color darkslateblue"></div>
-      <div class="color midnightblue"></div>
-      <div class="color greenyellow"></div>
-      <div class="color palevioletred"></div>
-      <div class="color lightseagreen"></div>
+      <div class="color blue"></div>
+      <div class="color yellow"></div>
     </div>
+    <!-- smaller colors, not working atm -->
+    <div class="colors visible-xs">
+      <div class="color-xs black"></div>
+      <div class="color-xs red"></div>
+      <div class="color-xs green"></div>
+      <div class="color-xs blue"></div>
+      <div class="color-xs yellow"></div>
+    <div>
   </div> <!-- /div 2 -->
+
 </div> <!-- /div menu -->
+
 
 
 <!-- JAVASCRIPT FILES -->
@@ -49,8 +57,5 @@
   <script src="/main.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-
-
 </body>
 </html>
