@@ -13,7 +13,8 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #e6f2ff;
+  background-color: darkgrey;
+
 }
 
 
@@ -49,6 +50,9 @@ left: 0px;
   height: auto;
   width: 100%;
   position: absolute; 
+  border: 5px;
+  border-style: groove;
+  border-color: darkgrey;
 }
 
 .colors {
