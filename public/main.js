@@ -109,6 +109,14 @@
   }
 
   function drawLine(x0, y0, x1, y1, color, emit){
+    var s = canvas.width/document.body.clientWidth;
+	  if(emit)
+	  {
+		  x0 = x0*s;
+		  x1 = x1*s;
+		  y0 = y0*s;
+		  y1 = y1*s;
+	  }
     context.beginPath();
     context.moveTo(x0, y0);
     context.lineTo(x1, y1);
