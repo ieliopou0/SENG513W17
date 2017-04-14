@@ -6,8 +6,8 @@ const port = process.env.PORT || 3000;
 const fs = require('fs');
 var  lineLog = []; // array of lines drawn
 
-var filePath = '/public/images/morningbreak.jpg';
-const original =  '/public/images/morningbreak.jpg'; //stays static for clearing
+var filePath = '/public/images/blank.png';
+const original =  '/public/images/blank.png'; //stays static for clearing
 
 
 // directories with static files
