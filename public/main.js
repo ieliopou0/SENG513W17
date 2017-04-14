@@ -53,9 +53,10 @@
   }
 
   // Process instructions from server
-  socket.on('clear canvas', clearCanvas);
+  socket.on('clear', clearCanvas);
   socket.on('drawing', onDrawingEvent);
   socket.on('image', loadImage);
+  socket.on('saves', saveCanvas);
 
   //window.addEventListener('resize', onResize, false);
   //onResize();
@@ -208,7 +209,9 @@
   // clear canvas
   function clearCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    socket.emit('clear canvas');
+    socket.emit('clear');
+    socket.emit('clear');
+    //saveCanvas();
   }
 
   // make the canvas fill its parent
