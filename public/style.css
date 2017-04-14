@@ -56,7 +56,7 @@ left: 0px;
 }
 
 .color {
-  display: inline-block;
+  display: block;
   height: 30px;
   width: 30px;
 }
