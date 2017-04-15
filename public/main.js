@@ -7,41 +7,46 @@
   var socket = io.connect();
   var canvas = document.getElementsByClassName('whiteboard')[0];
   var colors = document.getElementsByClassName('color');
+  var sizes = document.getElementsByClassName('brush');
   var context = canvas.getContext('2d');
   
-
   // Get navigation bar elements
   var open = document.getElementById('openLink');
   var save = document.getElementById('saveLink');
   var clear = document.getElementById('clearLink');
   var download = document.getElementById('downloadLink');
+  var draw = document.getElementById('draw');
+  var erase = document.getElementById('erase');
+
   canvas.width = document.body.clientWidth;
   canvas.height = document.body.clientHeight;
 
-  // Store the a temporary canvas
-  var canvasHx = document.createElement('canvas');
-  var contextHx = canvasHx.getContext('2d');
-
+  // create an object to store line attributes
   var current = {
-    color: 'black'
+    color: 'black',
+    lineWidth:'2'
   };
 
   // flag for drawing
   var drawing = false;
 
-  // Manage mouse events
+  /**
+  ** EVENT LISTENERS
+  **/
+  // Mouse event listeners
   canvas.addEventListener('mousedown', onMouseDown, false);
   canvas.addEventListener('mouseup', onMouseUp, false);
   canvas.addEventListener('mouseout', onMouseUp, false);
   canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 
-  // Manage navigation clicks
-  open.addEventListener('click', openImage, false);
+  // Navigation event listeners
   save.addEventListener('click', saveCanvas, false);
   download.addEventListener('click', downloadImage, false);
   clear.addEventListener('click', clearCanvas, false);
+  erase.addEventListener('click', onErase, false);
+  draw.addEventListener('click', onDraw, false);
 
-  // Manage touch events
+  // Touch event listeners
   // From: https://developer.mozilla.org/en/docs/Web/API/Touch_events
   canvas.addEventListener('touchstart', touchHandler, false);
   canvas.addEventListener('touchend', touchHandler, false);
@@ -52,16 +57,16 @@
     colors[i].addEventListener('click', onColorUpdate, false);
   }
 
+  for (var i = 0; i < sizes.length; i++){
+    sizes[i].addEventListener('click', onPenSizeUpdate, false);
+  }
+
   // Process instructions from server
   socket.on('clear', clearCanvas);
   socket.on('drawing', onDrawingEvent);
   socket.on('image', loadImage);
   socket.on('saves', saveCanvas);
 
-  //window.addEventListener('resize', onResize, false);
-  //onResize();
-
-  // TO DO - touch event handler
   function onTouch(e){
     var touches = event.changedTouches,
     first = touches[0];
@@ -78,7 +83,6 @@
     img.src = canvas.toDataURL(); // returns a PNG
     console.log('img' + img);
     console.log('img src ' + img.src);
-    // socket.emit('send-canvas', img);
     console.log('Drawing sent!');
   }
 
@@ -96,7 +100,6 @@
         binary += String.fromCharCode(uint8Arr[i]);
     }
     var base64String = window.btoa(binary);
-    // console.log(base64String);
     var img = new Image();
     // load image
     img.onload = function () {
@@ -108,7 +111,7 @@
     console.log('Image loaded');
   }
 
-  function drawLine(x0, y0, x1, y1, color, emit){
+  function drawLine(x0, y0, x1, y1, lineWidth, color, emit){
     var s = canvas.width/document.body.clientWidth;
 	  if(emit)
 	  {
@@ -121,7 +124,7 @@
     context.moveTo(x0, y0);
     context.lineTo(x1, y1);
     context.strokeStyle = color;
-    context.lineWidth = 2;
+    context.lineWidth = lineWidth; // original 2
     context.stroke();
     context.closePath();
 
@@ -147,19 +150,41 @@
   function onMouseUp(e){
     if (!drawing) { return; }
     drawing = false;
-    drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
+    drawLine(current.x, current.y, e.clientX, e.clientY, current.lineWidth, current.color, true);
     saveCanvas();
   }
 
   function onMouseMove(e){
     if (!drawing) { return; }
-    drawLine(current.x, current.y, e.clientX, e.clientY, current.color, true);
+    drawLine(current.x, current.y, e.clientX, e.clientY, current.lineWidth, current.color, true);
     current.x = e.clientX;
     current.y = e.clientY;
   }
 
   function onColorUpdate(e){
     current.color = e.target.className.split(' ')[1];
+  }
+
+  function onPenSizeUpdate(e){
+    var string = e.target.className.split(' ')[1];
+    if (string == "two"){
+      current.lineWidth = 2;
+    }else if (string == "four"){
+      current.lineWidth = 4;
+    }else if (string == "six"){
+      current.lineWidth = 6;
+    }
+  }
+
+  function onDraw(){
+    current.color = current.previousColor;
+    console.log('onDraw');
+  }
+
+  function onErase(){
+    current.previousColor = current.color;
+    current.color = 'white';
+    console.log('erasing!!!');
   }
 
   // limit the number of events per second
@@ -187,31 +212,12 @@
     //context.putImageData(imgData, 0, 0);
     socket.emit('reload');
 
-    /*
-    canvasHx.width = canvas.width;
-    canvasHx.height = canvas.height;
-    contextHx.drawImage(canvas, 0, 0);
-    canvas.width = 1000;
-    context.drawImage(canvasHx, 0, 0);
-    */
   }
 
-  /**
-   TO DO 
-  */
   function saveCanvas(){
     console.log('Canvas saved!');
     var dataURL = canvas.toDataURL("image/png");
-    socket.emit("imaged",dataURL);
-
-    //console.log(dataURL);
-    
-    //use this to download a png file
-    //var download = document.getElementById("download");
-
-     //document.getElementById("download").href = dataURL;
-
-
+    socket.emit("imaged", dataURL);
   }
 
   // clear canvas
@@ -219,69 +225,39 @@
     context.clearRect(0, 0, canvas.width, canvas.height);
     socket.emit('clear');
     socket.emit('clear');
-    //saveCanvas();
   }
 
-  // make the canvas fill its parent
-  /*function onResize() {
-    canvasHx.width = canvas.width;
-    canvasHx.height = canvas.height;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    contextHx.drawImage(canvas, 0, 0);
-    context.drawImage(canvasHx, 0, 0);
-    redraw();
-    console.log("Canvas resized");
-    */// context = canvas.getContext('2d');
-    // context.onload = function () {
-    //   context.drawImage(canvasHx, 0, 0, canvasHx.width, canvasHx.height, 0, 0, canvas.width, canvas.height);
-    // };
+  function touchHandler(event)
+  {
+      var touches = event.changedTouches,
+          first = touches[0],
+          type = '';
+      switch(event.type)
+      {
+          case "touchstart":
+              type = "mousedown";
+              break;
+          case "touchmove":
+              type = "mousemove";
+              break;
+          case "touchend":
+              type = "mouseup";
+              break;
+          case "touchcancel":
+              type = "mouseup";
+              break;
+          default:
+              return;
+      }
+    var simulatedEvent = document.createEvent("MouseEvent");
+      simulatedEvent.initMouseEvent(type, true, true, window, 1,
+          first.screenX, first.screenY,
+          first.clientX, first.clientY, false,
+          false, false, false, 0/*left*/, null);
 
-    /*
-    console.log("u resized");
-    // set canvas dimensions
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    // Save canvas as image data
-    var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-    // Copy back
-    context.putImageData(imgData, 0, 0);
-    // redraw();
-    */
-  //}
-
- 
-    function touchHandler(event)
-    {
-        var touches = event.changedTouches,
-            first = touches[0],
-            type = '';
-        switch(event.type)
-        {
-            case "touchstart":
-                type = "mousedown";
-                break;
-            case "touchmove":
-                type = "mousemove";
-                break;
-            case "touchend":
-                type = "mouseup";
-                break;
-            case "touchcancel":
-                type = "mouseup";
-                break;
-            default:
-                return;
-        }
-      var simulatedEvent = document.createEvent("MouseEvent");
-        simulatedEvent.initMouseEvent(type, true, true, window, 1,
-            first.screenX, first.screenY,
-            first.clientX, first.clientY, false,
-            false, false, false, 0/*left*/, null);
-
-        first.target.dispatchEvent(simulatedEvent);
-        event.preventDefault();
-    }
+      first.target.dispatchEvent(simulatedEvent);
+      event.preventDefault();
+  }
 
 
 
