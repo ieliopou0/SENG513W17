@@ -1,26 +1,26 @@
 
-# Socket.IO Collaborative Whiteboard
-
-A simple collaborative whiteboard for socket.io
+##Drawing Together is a Collaborative Whiteboard app based on Socket.IO 
 
 ## How to use
 
-```
-$ npm i && npm start
-```
+#Requirements
+In order to run the servers mongodb, node, and npm must be installed
 
-And point your browser to `http://localhost:3000`. Optionally, specify
-a port by supplying the `PORT` env variable.
+#Starting the servers
 
-## Features
+``` Mongodb server
+navigate to your mongodb location, into MongoDB\Server\3.4\bin
+$mongod.exe
 
-- draw on the whiteboard and all other users will see you drawings live
+``` Login server
+navigate to SENG513W17\login
+$node server.js
 
-##
-TO GET LOGIN WORKING
+``` Canvas server
+navigate to SENG513W17\draw
+$npm i && npm start
 
-run: mongod.exe
-go into the project folder, run: node server.js
-go to http://localhost:8080/
+```Robomongo can be used to easily check what is stored in the mongodb
 
-can use robomongo to check the DB
+#Using
+Point your browser to `localhost:8080`
